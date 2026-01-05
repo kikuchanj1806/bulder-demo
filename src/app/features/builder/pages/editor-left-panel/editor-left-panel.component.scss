@@ -1,0 +1,36 @@
+.left-panel {
+  min-width: 260px;
+}
+
+.nav-pills-sm .nav-link {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+.palette-item {
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.palette-item:hover {
+  border-color: rgba(13, 110, 253, 0.25);
+}
+
+.pi-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(13, 110, 253, 0.08);
+  color: rgba(13, 110, 253, 0.9);
+}
+
+.pi-icon .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(13, 110, 253, 0.9);
+}

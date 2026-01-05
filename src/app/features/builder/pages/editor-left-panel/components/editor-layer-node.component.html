@@ -1,0 +1,87 @@
+<div
+  class="layer-row"
+  cdkDrag
+  [cdkDragDisabled]="!canDnd"
+  [cdkDragData]="{ kind: 'node', nodeId, fromParentId: parentId }"
+
+  [class.is-selected]="selectedId === nodeId"
+  [class.can-dnd]="canDnd"
+  (click)="onPick($event)"
+  [style.paddingLeft.px]="8 + depth * 14"
+>
+  <button
+    type="button"
+    class="btn btn-sm btn-link p-0 me-2 toggle"
+    (click)="onToggle($event)"
+    [class.invisible]="!isContainer"
+  >
+    <i class="fa-light"
+       [class.fa-chevron-right]="isCollapsed"
+       [class.fa-chevron-down]="!isCollapsed"></i>
+  </button>
+
+  <span class="type-slot">
+  @if (node.type | nodeTypeIcon; as it) {
+    <span class="badge-type" [attr.title]="it.label">
+      <i [class]="it.cls"></i>
+    </span>
+
+    <span class="drag-handle" cdkDragHandle>
+        <i class="fa-light fa-grip-dots-vertical"></i>
+      </span>
+  }
+</span>
+
+  <span class="text-truncate flex-grow-1 ms-2">{{ nodeId }}</span>
+
+  <span class="actions-slot">
+  <button
+    type="button"
+    class="btn btn-sm btn-link action-btn px-6-c"
+    [attr.title]="isVisible ? 'Hide node' : 'Show node'"
+    (click)="onToggleVisible($event)"
+  >
+    @if (isVisible) {
+      <i class="fa-light fa-eye-slash"></i>
+    } @else {
+      <i class="fa-light fa-eye"></i>
+    }
+  </button>
+
+  <button
+    type="button"
+    class="btn btn-sm btn-link action-btn px-6-c"
+    title="Delete node"
+    [disabled]="!canDelete"
+    (click)="onDelete($event)"
+  >
+    <i class="fa-light fa-trash"></i>
+  </button>
+</span>
+</div>
+
+@if (isContainer && !isCollapsed) {
+  <div
+    class="layer-children"
+    cdkDropList
+    [cdkDropListData]="children"
+    [cdkDropListDisabled]="toolMode !== 'select'"
+    (cdkDropListDropped)="onChildrenDrop($event)"
+  >
+    @for (cid of children; track trackById($index, cid)) {
+      <app-editor-layer-node
+        class="layer-drag-item"
+        [schema]="schema"
+        [nodeId]="cid"
+        [parentId]="nodeId"
+        [depth]="depth + 1"
+        [selectedId]="selectedId"
+        [toolMode]="toolMode"
+        [mode]="mode"
+        [collapsed]="collapsed"
+        (toggle)="toggle.emit($event)"
+        (pick)="pick.emit($event)"
+      />
+    }
+  </div>
+}

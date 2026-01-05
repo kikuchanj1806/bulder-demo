@@ -1,1 +1,51 @@
 /* You can add global styles to this file, and also import other style files */
+
+
+/* -------------------------------------------------------------------------------------------------
+ * 1) Global imports
+ * ------------------------------------------------------------------------------------------------*/
+body {
+  overflow: auto !important;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+.node-shell {
+  position: relative;
+}
+
+.node-shell.node-selected {
+  outline: 2px solid var(#0d6efd);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.tb-tooltip-panel { pointer-events: none; }
+
+.cdk-drag-preview {
+  box-shadow: 0 8px 24px rgba(0,0,0,.15);
+  border-radius: 10px;
+}
+
+.cdk-drag-placeholder {
+  opacity: .25;
+  outline: 2px dashed rgba(13,110,253,.6);
+  border-radius: 10px;
+}
+
+.cdk-drag-animating {
+  transition: transform 150ms ease;
+}
+
+.ui-node-wrap {
+  display: block;
+}
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  width: 100%;
+}

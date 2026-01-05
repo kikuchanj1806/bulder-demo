@@ -1,0 +1,31 @@
+<div class="canvas-shell h-100 d-flex flex-column">
+  <div class="canvas-toolbar border-bottom bg-white px-3 py-2 d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center gap-2">
+      <span class="fw-semibold">Preview</span>
+      <span class="text-muted small">({{ mode }})</span>
+    </div>
+  </div>
+
+  <div class="canvas-stage flex-grow-1 overflow-auto" #stage>
+    <div class="canvas-center d-flex justify-content-center py-4">
+      <div [class]="frameClass">
+        <div class="frame-inner"
+             (mousemove)="onCanvasMouseMove($event)"
+             (mouseleave)="onCanvasMouseLeave()"
+             (click)="onCanvasBgClick($event)">
+          @if (!schema) {
+            <div class="p-3 text-muted">Schema loaded: NO</div>
+          }
+          @if (schema && bodyRootId) {
+            <app-canvas-node
+              [schema]="schema"
+              [nodeId]="bodyRootId"
+              [mode]="mode"
+              [toolMode]="toolMode"
+            ></app-canvas-node>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

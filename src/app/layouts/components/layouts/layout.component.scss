@@ -1,0 +1,21 @@
+:host {
+  display: block;
+  height: 100vh;
+}
+
+.editor-root {
+  height: 100vh;
+}
+
+.editor-split {
+  height: calc(100vh - 52px);
+  background: #f3f4f6;
+}
+
+::ng-deep .as-split-gutter {
+  background: transparent;
+}
+::ng-deep .as-split-gutter-icon {
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 999px;
+}

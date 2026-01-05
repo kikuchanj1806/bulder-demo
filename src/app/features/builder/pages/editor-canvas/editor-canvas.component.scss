@@ -1,0 +1,40 @@
+.canvas-shell {
+  background: #f3f4f6;
+}
+
+.canvas-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.canvas-stage {
+  min-height: 0; // để overflow-auto hoạt động đúng trong flex layout
+}
+
+.device-frame {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 14px;
+}
+
+.device-desktop {
+  width: min(1100px, calc(100vw - 520px)); // ước lượng trừ 2 sidebar
+  max-width: 1100px;
+}
+
+.device-mobile {
+  width: 390px;
+  max-width: calc(100vw - 520px);
+  border-radius: 26px;
+}
+
+.frame-inner {
+  min-height: 720px;
+}
+
+.device-mobile .frame-inner {
+  min-height: 780px;
+  border-radius: 24px;
+  overflow: hidden;
+}

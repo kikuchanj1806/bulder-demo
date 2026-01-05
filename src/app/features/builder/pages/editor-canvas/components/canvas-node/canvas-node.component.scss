@@ -1,0 +1,113 @@
+.ui-node {
+  position: relative;
+  border-radius: 8px;
+}
+
+/* ====== Outline hover/selected ====== */
+.ui-node.is-hover::after,
+.ui-node.is-selected::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+.ui-node.is-hover::after {
+  outline: 1px dashed rgba(13, 110, 253, 0.7);
+}
+
+.ui-node.is-selected::after {
+  outline: 2px solid rgba(13, 110, 253, 0.95);
+}
+
+.ui-node.is-hover {
+  outline: 2px solid rgba(13, 110, 253, 0.35);
+  outline-offset: 2px;
+}
+
+.ui-node.is-selected {
+  outline: 2px solid rgba(13, 110, 253, 0.9);
+  outline-offset: 2px;
+}
+
+/* ====== Node badge ====== */
+.node-badge {
+  position: absolute;
+  top: -10px;
+  left: 8px;
+  z-index: 20;
+  font-size: 11px;
+  line-height: 1;
+  padding: 4px 6px;
+  border-radius: 999px;
+  background: rgba(13, 110, 253, 0.95);
+  color: #fff;
+  pointer-events: none; // không cản click/drag
+  transform: translateY(-2px);
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+/* ✅ CHỈ hiện badge của node hiện tại (direct child) */
+.ui-node.is-hover > .node-badge,
+.ui-node.is-selected > .node-badge {
+  opacity: 1;
+}
+
+/* ====== Drag handle ====== */
+.ui-node-wrap {
+  position: relative;
+}
+
+.drag-handle {
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+/* ✅ CHỈ hiện handle khi Angular set class show-handle */
+.ui-node-wrap.show-handle > .drag-handle {
+  opacity: 1;
+}
+
+/* khi đang kéo thì giữ hiện */
+.ui-node-wrap.cdk-drag-dragging > .drag-handle {
+  opacity: 1;
+}
+
+/* ====== CDK drag preview/placeholder ====== */
+.cdk-drag-preview {
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
+  opacity: 0.95;
+}
+
+.cdk-drag-placeholder {
+  opacity: 0.15;
+}
+
+.cdk-drop-list-dragging .ui-node-wrap {
+  transition: transform 120ms ease;
+}
+
+/* ====== Empty drop hint ====== */
+.empty-drop-hint {
+  border: 2px dashed rgba(13, 110, 253, 0.35);
+  border-radius: 12px;
+  padding: 18px;
+  text-align: center;
+  color: rgba(13, 110, 253, 0.8);
+  background: rgba(13, 110, 253, 0.05);
+}
+
+.ui-node.palette-over::after {
+  content:'';
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  outline:2px dashed rgba(25,135,84,.9);
+  outline-offset:2px;
+  border-radius:8px;
+}
+

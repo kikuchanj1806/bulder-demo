@@ -1,0 +1,17 @@
+<app-layout>
+  <div editor-left class="h-100">
+    <app-editor-left-panel></app-editor-left-panel>
+  </div>
+
+  <div editor-canvas class="h-100">
+    <app-editor-canvas class="h-100 d-block"
+                       [schema]="schema$ | async"
+                       [mode]="(mode$ | async) ?? 'mobile'"
+                       [toolMode]="(toolMode$ | async)!"
+    ></app-editor-canvas>
+  </div>
+
+  <div editor-right class="h-100">
+    <app-editor-right-panel></app-editor-right-panel>
+  </div>
+</app-layout>

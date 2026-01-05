@@ -1,0 +1,117 @@
+<div class="left-panel h-100 d-flex flex-column">
+  <!-- header -->
+  <div class="lp-header border-bottom bg-white px-3 py-2">
+<!--    <div class="d-flex align-items-center justify-content-between">-->
+<!--      <div class="fw-semibold">Components</div>-->
+<!--      <span class="badge text-bg-light">Phase 1</span>-->
+<!--    </div>-->
+
+    <!-- tabs -->
+    <div class="">
+      <ul class="nav nav-pills nav-pills-sm">
+        <li class="nav-item">
+          <button
+            class="nav-link"
+            [class.active]="activeTab === 'components'"
+            type="button"
+            (click)="setTab('components')"
+          >
+            Components
+          </button>
+        </li>
+        <li class="nav-item">
+          <button
+            class="nav-link"
+            [class.active]="activeTab === 'layers'"
+            type="button"
+            (click)="setTab('layers')"
+          >
+            Layers
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- body -->
+  <div class="lp-body flex-grow-1 overflow-auto p-3">
+    @if (activeTab === 'components') {
+      @if ((toolMode$ | async) !== 'select') {
+        <div class="alert alert-light border small mb-3">
+          Bật <b>Select mode</b> ở Topbar để thao tác kéo thả/chọn node.
+        </div>
+      }
+
+      <div
+        cdkDropList
+        id="palette"
+        class="palette-source"
+        [cdkDropListSortingDisabled]="true"
+        [cdkDropListConnectedTo]="(canvasDropListIds$ | async) ?? []"
+      >
+        @for (g of groups; track g.key) {
+          <div class="mb-3">
+            <div class="text-uppercase text-muted small fw-semibold mb-2">{{ g.title }}</div>
+
+            <div class="d-flex flex-column gap-2">
+              @for (it of g.items; track it.type) {
+                <!-- ✅ item becomes cdkDrag -->
+                <button
+                  type="button"
+                  class="palette-item btn btn-light text-start"
+                  cdkDrag
+                  [cdkDragDisabled]="(toolMode$ | async) !== 'select'"
+                  [cdkDragData]="{ kind: 'palette', type: it.type }"
+                  (cdkDragStarted)="onPaletteDragStarted()"
+                  (cdkDragMoved)="onPaletteDragMoved($event)"
+                  (cdkDragEnded)="onPaletteDragEnded()"
+                >
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="pi-icon">
+                      @if (it.icon) {
+                        <i [class]="it.icon"></i>
+                      } @else {
+                        <span class="dot"></span>
+                      }
+                    </div>
+
+                    <div class="flex-grow-1">
+                      <div class="fw-semibold">{{ it.title }}</div>
+                      @if (it.subtitle) {
+                        <div class="text-muted small">{{ it.subtitle }}</div>
+                      }
+                    </div>
+                  </div>
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    @if (activeTab === 'layers') {
+      @if (schema$ | async; as s) {
+
+        @for (z of (layersVm$ | async) ?? []; track z.key) {
+          <div class="mb-3">
+            <div class="text-uppercase text-muted small fw-semibold mb-2">{{ z.title }}</div>
+
+            <app-editor-layer-node
+              [schema]="s"
+              [nodeId]="z.rootId"
+              [depth]="0"
+              [toolMode]="(toolMode$ | async) ?? 'preview'"
+              [selectedId]="(selectedId$ | async)"
+              [collapsed]="collapsed"
+              (toggle)="toggleCollapse($event)"
+              (pick)="selectNode($event)"
+            />
+          </div>
+        }
+      } @else {
+        <div class="text-muted small">Schema chưa load</div>
+      }
+    }
+  </div>
+</div>

@@ -1,0 +1,217 @@
+:root {
+  --tb-icon-area: 3.5rem; /* giống Shopify */
+  --tb-control: 32px;
+  --tb-radius: 10px;
+
+  --tb-bg-surface: #fff;
+  --tb-bg-hover: rgba(0, 0, 0, .06);
+  --tb-bg-active: rgba(0, 0, 0, .10);
+
+  --tb-text: #212529;
+  --tb-text-brand: var(--bs-primary, #0d6efd);
+  --tb-focus: rgba(13, 110, 253, .55);
+
+  --tb-motion: 150ms;
+  --tb-ease: cubic-bezier(.2, 0, .2, 1);
+}
+
+.tb {
+  height: 52px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.tb-icon {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+
+  i {
+    font-size: 20px;
+  }
+}
+
+.mw-300 {
+  min-width: 300px;
+}
+
+.tb-center {
+  min-width: 280px;
+}
+
+/* Segmented buttons giống kiểu trong ảnh */
+.tb-seg {
+  border: 1px solid rgba(0, 0, 0, .12);
+  background: #f8f9fa;
+  color: #111;
+}
+
+.tb-seg.active {
+  background: rgba(13, 110, 253, .12);
+  border-color: rgba(13, 110, 253, .35);
+  color: #0d6efd;
+}
+
+.tb-seg + .tb-seg {
+  margin-left: -1px; /* nối border cho đẹp */
+}
+
+.tb-exit-wrap .template-name {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 150ms ease, transform 150ms ease;
+  will-change: opacity, transform;
+}
+
+.tb-exit-wrap .tb-exit-action:has(.tb-exit-icon:hover) ~ .template-name {
+  opacity: 0;
+  transform: translateX(0.5rem);
+}
+
+.tb-exit-content:hover .tb-exit-label,
+.tb-exit-content:focus .tb-exit-label,
+.tb-exit-content:focus-visible .tb-exit-label {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.template-name {
+  padding-left: 3.5rem;
+  transition-property: opacity, transform;
+  transition-duration: .15s;
+  transition-timing-function: cubic-bezier(.25, .1, .25, 1);
+
+  min-width: 0;
+  max-width: 100%;
+  z-index: 1;
+  position: relative;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: var(--p-space-300);
+  flex: 0 1 auto;
+  height: 100%;
+}
+
+.tb-exit-wrap {
+  position: relative;
+  width: var(--tb-icon-area);
+  height: 100%;
+  flex: 0 0 auto;
+}
+
+.tb-exit-action {
+  appearance: none;
+  border: 0;
+  background: none;
+  padding: 0;
+  margin: 0;
+
+  display: inline-flex;
+  align-items: center;
+
+  min-height: var(--tb-control);
+  border-radius: var(--tb-radius);
+  color: var(--tb-text);
+  text-decoration: none;
+  cursor: pointer;
+
+  position: relative;
+  outline: none;
+
+  transition: color var(--tb-motion) var(--tb-ease),
+  background-color var(--tb-motion) var(--tb-ease);
+}
+
+.tb-exit-action::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: calc(var(--tb-radius) + 1px);
+  pointer-events: none;
+  box-shadow: 0 0 0 0 transparent;
+  transition: box-shadow 100ms var(--tb-ease);
+}
+
+.tb-exit-action:focus-visible::after {
+  box-shadow: 0 0 0 3px var(--tb-focus);
+}
+
+.tb-exit-content {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.tb-exit-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 16px;
+  width: 3.5rem;
+}
+
+.tb-exit-label {
+  white-space: nowrap;
+  padding-right: .75rem;
+  line-height: 1;
+}
+
+.tb-img {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  background-color: currentColor;
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+}
+
+.tb-img--inspect {
+  -webkit-mask-image: url('/assets/img/icons/inspect.svg');
+  mask-image: url('/assets/img/icons/inspect.svg');
+}
+
+.tb-icon {
+  color: #6c757d;
+}
+
+.tb-icon.icon-select.active {
+  color: rgb(0, 91, 211);
+}
+
+@media (min-width: 41.6875em) {
+  .tb-exit-action--animated {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    z-index: 2;
+    background-color: var(--tb-bg-surface);
+    border-radius: 0;
+  }
+
+  .tb-exit-content {
+    height: calc(100% - 1px);
+    min-width: var(--tb-icon-area);
+    max-width: var(--tb-icon-area);
+    transition: max-width var(--tb-motion) var(--tb-ease);
+  }
+
+  .tb-exit-label {
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: opacity var(--tb-motion) var(--tb-ease),
+    transform var(--tb-motion) var(--tb-ease);
+  }
+}

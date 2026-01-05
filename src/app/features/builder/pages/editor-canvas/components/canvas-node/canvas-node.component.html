@@ -1,0 +1,256 @@
+@if (isVisible) {
+  @switch (node.type) {
+
+    @case ('BLOCK') {
+      <div
+        class="ui-block ui-node"
+        [class.is-selected]="isSelected"
+        [class.is-hover]="isHover"
+        [attr.data-node-id]="nodeId"
+        [attr.data-drop-parent-id]="nodeId"
+        [class.palette-over]="isPaletteOver"
+        [ngStyle]="blockStyle()"
+        (click)="onSelect($event)"
+        (mouseenter)="onEnter()"
+        (mouseleave)="onLeave()"
+
+        cdkDropList
+        [id]="dropListId"
+        [cdkDropListData]="node.children"
+        [cdkDropListConnectedTo]="connectedTo"
+        [cdkDropListOrientation]="dropOrientation"
+        [cdkDropListDisabled]="toolMode !== 'select'"
+        [cdkDropListEnterPredicate]="canEnter"
+        (cdkDropListEntered)="onDropListEntered($event)"
+        (cdkDropListDropped)="onDrop($event)"
+      >
+        <div class="node-badge">{{ node.type }} · {{ node.id }}</div>
+        @for (cid of childIds(); track cid) {
+          @if (isNodeVisible(cid)) {
+            <div
+              class="ui-node-wrap"
+              cdkDrag
+              [cdkDragDisabled]="toolMode !== 'select'"
+              [cdkDragData]="{ kind: 'node', nodeId: cid, fromParentId: nodeId }"
+              [cdkDragBoundary]="'.frame-inner'"
+              [class.show-handle]="isActiveNode(cid)"
+            >
+              <div class="drag-handle" cdkDragHandle title="Drag">
+                <i class="fa-light fa-grip-dots-vertical"></i>
+              </div>
+
+              <app-canvas-node
+                [schema]="schema"
+                [nodeId]="cid"
+                [mode]="mode"
+                [toolMode]="toolMode"
+              ></app-canvas-node>
+            </div>
+          }
+        }
+
+        @if (childIds().length === 0) {
+          <div class="empty-drop-hint">
+            Drop here
+          </div>
+        }
+      </div>
+    }
+    @case ('TEXT') {
+      <div
+        class="ui-text ui-node"
+        [class.is-selected]="isSelected"
+        [class.is-hover]="isHover"
+        [attr.data-node-id]="nodeId"
+        [attr.data-drop-parent-id]="nodeId"
+        [class.palette-over]="isPaletteOver"
+        [ngStyle]="textStyle()"
+        (click)="onSelect($event)"
+        (mouseenter)="onEnter()"
+        (mouseleave)="onLeave()"
+      >
+        <div class="node-badge">{{ node.type }} · {{ node.id }}</div>
+        {{ props.content || '' }}
+      </div>
+    }
+    @case ('IMAGE') {
+      <div
+        class="ui-image ui-node"
+        [class.is-selected]="isSelected"
+        [class.is-hover]="isHover"
+        [attr.data-node-id]="nodeId"
+        [attr.data-drop-parent-id]="nodeId"
+        [class.palette-over]="isPaletteOver"
+        (click)="onSelect($event)"
+        (mouseenter)="onEnter()"
+        (mouseleave)="onLeave()"
+      >
+        <div class="node-badge">{{ node.type }} · {{ node.id }}</div>
+        <img [src]="props.imageUrl" alt="" [ngStyle]="imgStyle()"/>
+      </div>
+    }
+    @case ('GRID') {
+      <div
+        class="ui-grid ui-node"
+        [class.is-selected]="isSelected"
+        [class.is-hover]="isHover"
+        [attr.data-node-id]="nodeId"
+        [attr.data-drop-parent-id]="nodeId"
+        [class.palette-over]="isPaletteOver"
+        [ngStyle]="gridStyle()"
+        (click)="onSelect($event)"
+        (mouseenter)="onEnter()"
+        (mouseleave)="onLeave()"
+
+        cdkDropList
+        [id]="dropListId"
+        [cdkDropListData]="node.children"
+        [cdkDropListConnectedTo]="connectedTo"
+        [cdkDropListOrientation]="dropOrientation"
+        [cdkDropListDisabled]="toolMode !== 'select'"
+        [cdkDropListEnterPredicate]="canEnter"
+        (cdkDropListEntered)="onDropListEntered($event)"
+        (cdkDropListDropped)="onDrop($event)"
+      >
+        <div class="node-badge">{{ node.type }} · {{ node.id }}</div>
+        @for (cid of childIds(); track cid) {
+          @if (isNodeVisible(cid)) {
+            <div
+              class="ui-node-wrap"
+              cdkDrag
+              [cdkDragDisabled]="toolMode !== 'select'"
+              [cdkDragData]="{ kind: 'node', nodeId: cid, fromParentId: nodeId }"
+              [cdkDragBoundary]="'.frame-inner'"
+              [class.show-handle]="isActiveNode(cid)"
+            >
+              <div class="drag-handle" cdkDragHandle title="Drag">
+                <i class="fa-light fa-grip-dots-vertical"></i>
+              </div>
+
+              <app-canvas-node
+                [schema]="schema"
+                [nodeId]="cid"
+                [mode]="mode"
+                [toolMode]="toolMode"
+              ></app-canvas-node>
+            </div>
+          }
+        }
+
+        @if (childIds().length === 0) {
+          <div class="empty-drop-hint">
+            Drop here
+          </div>
+        }
+      </div>
+    }
+    @case ('LIST') {
+      <div
+        class="ui-list ui-node"
+        [class.is-selected]="isSelected"
+        [class.is-hover]="isHover"
+        [attr.data-node-id]="nodeId"
+        [attr.data-drop-parent-id]="nodeId"
+        [class.palette-over]="isPaletteOver"
+        [ngStyle]="listStyle()"
+        (click)="onSelect($event)"
+        (mouseenter)="onEnter()"
+        (mouseleave)="onLeave()"
+
+        cdkDropList
+        [id]="dropListId"
+        [cdkDropListData]="node.children"
+        [cdkDropListConnectedTo]="connectedTo"
+        [cdkDropListOrientation]="dropOrientation"
+        [cdkDropListDisabled]="toolMode !== 'select'"
+        [cdkDropListEnterPredicate]="canEnter"
+        (cdkDropListEntered)="onDropListEntered($event)"
+        (cdkDropListDropped)="onDrop($event)"
+      >
+        <div class="node-badge">{{ node.type }} · {{ node.id }}</div>
+        @for (cid of childIds(); track cid) {
+          @if (isNodeVisible(cid)) {
+            <div
+              class="ui-node-wrap"
+              cdkDrag
+              [cdkDragDisabled]="toolMode !== 'select'"
+              [cdkDragData]="{ kind: 'node', nodeId: cid, fromParentId: nodeId }"
+              [cdkDragBoundary]="'.frame-inner'"
+              [class.show-handle]="isActiveNode(cid)"
+            >
+              <div class="drag-handle" cdkDragHandle title="Drag">
+                <i class="fa-light fa-grip-dots-vertical"></i>
+              </div>
+
+              <app-canvas-node
+                [schema]="schema"
+                [nodeId]="cid"
+                [mode]="mode"
+                [toolMode]="toolMode"
+              ></app-canvas-node>
+            </div>
+          }
+        }
+
+        @if (childIds().length === 0) {
+          <div class="empty-drop-hint">
+            Drop here
+          </div>
+        }
+      </div>
+    }
+    @case ('PRODUCT_CARD') {
+      <div
+        class="card border-0 shadow-sm ui-node"
+        [class.is-selected]="isSelected"
+        [class.is-hover]="isHover"
+        [attr.data-node-id]="nodeId"
+        [attr.data-drop-parent-id]="nodeId"
+        [class.palette-over]="isPaletteOver"
+        (click)="onSelect($event)"
+        (mouseenter)="onEnter()"
+        (mouseleave)="onLeave()"
+      >
+        <div class="node-badge">{{ node.type }} · {{ node.id }}</div>
+        <img class="card-img-top" [src]="props.imageUrl" alt=""/>
+        <div class="card-body p-2">
+          <div class="fw-semibold small">{{ props.title }}</div>
+          <div class="text-muted small">{{ props.price }}</div>
+        </div>
+      </div>
+    }
+    @case ('BLOG_CARD') {
+      <div
+        class="card border-0 shadow-sm ui-node"
+        [class.is-selected]="isSelected"
+        [class.is-hover]="isHover"
+        [attr.data-node-id]="nodeId"
+        [attr.data-drop-parent-id]="nodeId"
+        [class.palette-over]="isPaletteOver"
+        (click)="onSelect($event)"
+        (mouseenter)="onEnter()"
+        (mouseleave)="onLeave()"
+      >
+        <div class="node-badge">{{ node.type }} · {{ node.id }}</div>
+        <img class="card-img-top" [src]="props.imageUrl" alt=""/>
+        <div class="card-body p-2">
+          <div class="fw-semibold small">{{ props.title }}</div>
+        </div>
+      </div>
+    }
+    @default {
+      <div
+        class="border rounded p-2 small text-muted ui-node"
+        (click)="onSelect($event)"
+        [attr.data-node-id]="nodeId"
+        [attr.data-drop-parent-id]="nodeId"
+        [class.palette-over]="isPaletteOver"
+        (mouseenter)="onEnter()"
+        (mouseleave)="onLeave()"
+      >
+        <div class="node-badge">{{ node.type }} · {{ node.id }}</div>
+        Unsupported: {{ node.type }} ({{ node.id }})
+      </div>
+    }
+  }
+}

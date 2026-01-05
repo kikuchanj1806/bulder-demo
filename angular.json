@@ -24,28 +24,24 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
+              "src/favicon.ico",
+              "src/assets",
               {
                 "glob": "**/*",
                 "input": "public"
               }
             ],
             "styles": [
+              "src/assets/fontawesome/all.min.css",
+              "src/assets/css/all.min.css",
               "src/styles.scss"
             ]
           },
           "configurations": {
             "production": {
               "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
-                }
+                { "type": "initial", "maximumWarning": "2mb", "maximumError": "5mb" },
+                { "type": "anyComponentStyle", "maximumWarning": "20kb", "maximumError": "40kb" }
               ],
               "outputHashing": "all"
             },
@@ -94,5 +90,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "37d2bf27-7ea9-4263-978b-0dce41c0e226"
   }
 }

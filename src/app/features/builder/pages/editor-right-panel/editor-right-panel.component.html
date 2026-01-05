@@ -1,0 +1,208 @@
+<div class="h-100 p-3">
+  @if (vm$ | async; as vm) {
+
+    <!-- No selection -->
+    @if (!vm.hasSelection || !vm.node || !vm.selectedId) {
+      <div class="text-muted small">Chưa chọn node nào.</div>
+    } @else {
+
+      <!-- Header -->
+      <div class="d-flex align-items-start justify-content-between mb-2">
+        <div>
+          <div class="fw-semibold d-flex align-items-center gap-2">
+            <span class="badge text-bg-light">{{ vm.node.type }}</span>
+            <span class="text-truncate" style="max-width: 240px">
+              <code>{{ vm.node.id }}</code>
+            </span>
+          </div>
+          <div class="text-muted small mt-1">
+            Mode: <b>{{ vm.mode }}</b>
+          </div>
+        </div>
+
+        <span class="badge text-bg-light">{{ vm.toolMode }}</span>
+      </div>
+
+      <!-- ✅ Step 3.1: Context gating banner -->
+      @if (vm.readonlyReason && (!vm.canEdit || !vm.canMutate)) {
+        <div class="alert alert-light border small py-2 mb-3">
+          {{ vm.readonlyReason }}
+        </div>
+      }
+
+      <!-- Actions -->
+      <div class="d-flex gap-2 mb-3">
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          (click)="onToggleVisible(vm)"
+          [disabled]="!vm.canMutate"
+          [attr.title]="vm.isVisible ? 'Hide node' : 'Show node'"
+        >
+          @if (vm.isVisible) {
+            <i class="fa-light fa-eye-slash me-1"></i> Hide
+          } @else {
+            <i class="fa-light fa-eye me-1"></i> Show
+          }
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-primary"
+          (click)="onDuplicate(vm)"
+          [disabled]="!vm.canMutate"
+          title="Duplicate node"
+        >
+          <i class="fa-light fa-clone me-1"></i> Duplicate
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-danger ms-auto"
+          (click)="onDelete(vm)"
+          [disabled]="!vm.canMutate"
+          title="Delete node"
+        >
+          <i class="fa-light fa-trash me-1"></i> Delete
+        </button>
+      </div>
+
+      <!-- Scope switch -->
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <div class="fw-semibold">Props</div>
+        <span class="badge text-bg-light">{{ vm.mode }}</span>
+      </div>
+
+      <div class="btn-group btn-group-sm mb-2 w-100">
+        <button
+          type="button"
+          class="btn btn-outline-primary"
+          [class.active]="vm.scope === 'mode'"
+          (click)="setScope('mode')"
+        >
+          Override ({{ vm.mode }})
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-outline-primary"
+          [class.active]="vm.scope === 'base'"
+          (click)="setScope('base')"
+        >
+          Base
+        </button>
+      </div>
+
+      @if (vm.scope === 'mode') {
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary mb-3 w-100"
+          (click)="onResetOverride(vm)"
+          [disabled]="!vm.canEdit"
+        >
+          Reset override ({{ vm.mode }})
+        </button>
+      }
+
+      <!-- Form -->
+      <form [formGroup]="form" class="d-grid gap-2">
+        <!-- Common -->
+        <label class="form-check">
+          <input class="form-check-input" type="checkbox" formControlName="isVisible" />
+          <span class="form-check-label">Visible</span>
+        </label>
+
+        <div class="row g-2">
+          <div class="col-6">
+            <label class="form-label small mb-1">Gap</label>
+            <input class="form-control form-control-sm" type="number" formControlName="gap" />
+          </div>
+          <div class="col-6">
+            <label class="form-label small mb-1">Radius</label>
+            <input class="form-control form-control-sm" type="number" formControlName="radius" />
+          </div>
+        </div>
+
+        <!-- BLOCK/LIST -->
+        @if (vm.node.type === 'BLOCK' || vm.node.type === 'LIST') {
+          <div>
+            <label class="form-label small mb-1">Direction</label>
+            <select class="form-select form-select-sm" formControlName="direction">
+              <option value="COLUMN">Column</option>
+              <option value="ROW">Row</option>
+            </select>
+          </div>
+        }
+
+        <!-- GRID -->
+        @if (vm.node.type === 'GRID') {
+          <div>
+            <label class="form-label small mb-1">Columns</label>
+            <input
+              class="form-control form-control-sm"
+              type="number"
+              min="1"
+              formControlName="columns"
+            />
+          </div>
+        }
+
+        <!-- TEXT -->
+        @if (vm.node.type === 'TEXT') {
+          <div>
+            <label class="form-label small mb-1">Content</label>
+            <textarea
+              class="form-control form-control-sm"
+              rows="3"
+              formControlName="content"
+            ></textarea>
+          </div>
+
+          <div class="row g-2">
+            <div class="col-6">
+              <label class="form-label small mb-1">Font size</label>
+              <input class="form-control form-control-sm" type="number" formControlName="fontSize" />
+            </div>
+            <div class="col-6">
+              <label class="form-label small mb-1">Weight</label>
+              <input class="form-control form-control-sm" type="text" formControlName="fontWeight" />
+            </div>
+          </div>
+        }
+
+        <!-- IMAGE / CARD -->
+        @if (vm.node.type === 'IMAGE' || vm.node.type === 'PRODUCT_CARD' || vm.node.type === 'BLOG_CARD') {
+          <div>
+            <label class="form-label small mb-1">Image URL</label>
+            <input class="form-control form-control-sm" type="text" formControlName="imageUrl" />
+          </div>
+        }
+
+        @if (vm.node.type === 'PRODUCT_CARD' || vm.node.type === 'BLOG_CARD') {
+          <div>
+            <label class="form-label small mb-1">Title</label>
+            <input class="form-control form-control-sm" type="text" formControlName="title" />
+          </div>
+        }
+
+        @if (vm.node.type === 'PRODUCT_CARD') {
+          <div>
+            <label class="form-label small mb-1">Price</label>
+            <input class="form-control form-control-sm" type="text" formControlName="price" />
+          </div>
+        }
+      </form>
+
+      <!-- Debug -->
+      <details class="mt-3">
+        <summary class="small text-muted">Computed props (base + override)</summary>
+        <pre class="small bg-light border rounded p-2 mt-2 mb-0">{{ toJson(vm.computed) }}</pre>
+      </details>
+
+      <details class="mt-2">
+        <summary class="small text-muted">Raw node</summary>
+        <pre class="small bg-light border rounded p-2 mt-2 mb-0">{{ toJson(vm.node) }}</pre>
+      </details>
+    }
+  }
+</div>

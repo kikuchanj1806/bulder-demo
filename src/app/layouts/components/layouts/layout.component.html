@@ -1,0 +1,22 @@
+<div class="editor-root d-flex flex-column">
+  <app-editor-topbar></app-editor-topbar>
+
+  <as-split
+    class="editor-split flex-grow-1"
+    direction="horizontal"
+    [gutterSize]="8"
+    [useTransition]="true"
+  >
+    <as-split-area [size]="leftSize" [minSize]="leftMin">
+      <ng-content select="[editor-left]"></ng-content>
+    </as-split-area>
+
+    <as-split-area [size]="canvasSize" [minSize]="canvasMin">
+      <ng-content select="[editor-canvas]"></ng-content>
+    </as-split-area>
+
+    <as-split-area [size]="rightSize" [minSize]="rightMin">
+      <ng-content select="[editor-right]"></ng-content>
+    </as-split-area>
+  </as-split>
+</div>
