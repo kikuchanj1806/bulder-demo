@@ -79,6 +79,10 @@ export class EditorStateService {
     }
   }
 
+  get getToolMode(): EditorToolMode {
+    return this._toolMode$.value;
+  }
+
   select(nodeId: string | null) {
     this._selectedId$.next(nodeId);
   }
@@ -641,6 +645,8 @@ export class EditorStateService {
     const base = curProps.base ?? ({} as any);
     const overrides = curProps.overrides ?? ({} as any);
     const ovForMode = overrides[mode] ?? {};
+
+    console.log('[PATCH]', { nodeId, scope, mode, patch });
 
     const nextProps =
       scope === 'base'

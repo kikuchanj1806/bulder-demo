@@ -1,0 +1,301 @@
+<ng-container [formGroup]="form">
+  <!-- Visible -->
+  <section class="ins-section">
+    <div class="ins-row">
+      <div class="ins-label">Visible</div>
+      <div class="ins-control">
+        <div class="form-check form-switch m-0">
+          <input class="form-check-input" type="checkbox" formControlName="isVisible" id="rpVisible"/>
+          <label class="form-check-label ms-2" for="rpVisible" style="pointer-events:none;">Hiển thị</label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Layout -->
+  <section class="ins-section">
+    <div class="ins-title">Layout</div>
+    <div class="ins-row">
+      <div class="ins-label">Gap</div>
+      <div class="ins-control">
+        <input class="form-control form-control-sm" type="number" formControlName="gap"/>
+      </div>
+    </div>
+  </section>
+
+  <!-- Card -->
+  <section class="ins-section">
+    <div class="ins-title">Card</div>
+
+    <div class="ins-row">
+      <div class="ins-label">Image URL</div>
+      <div class="ins-control">
+        <input class="form-control form-control-sm" type="text" placeholder="https://..." formControlName="imageUrl"/>
+      </div>
+    </div>
+
+    <div class="ins-row">
+      <div class="ins-label">Title</div>
+      <div class="ins-control">
+        <input class="form-control form-control-sm" type="text" formControlName="title"/>
+      </div>
+    </div>
+
+    @if (kind === 'product') {
+      <div class="ins-row">
+        <div class="ins-label">Price</div>
+        <div class="ins-control">
+          <input class="form-control form-control-sm" type="text" formControlName="price"/>
+        </div>
+      </div>
+    }
+  </section>
+
+  <!-- ===== Style (Background + Radius) ===== -->
+  <section class="ins-section">
+    <div class="ins-title">Style</div>
+
+    <div class="ins-row">
+      <div class="ins-label">Nền</div>
+      <div class="ins-control">
+        <div class="segmented small">
+          <button type="button" class="seg-btn"
+                  [class.active]="form.get('bgType')?.value === 'COLOR'"
+                  (click)="setBgType('COLOR')">Màu
+          </button>
+          <button type="button" class="seg-btn"
+                  [class.active]="form.get('bgType')?.value === 'IMAGE'"
+                  (click)="setBgType('IMAGE')">Hình ảnh
+          </button>
+        </div>
+      </div>
+    </div>
+
+    @if (form.get('bgType')?.value === 'COLOR') {
+      <div class="ins-row">
+        <div class="ins-label">Màu nền</div>
+        <div class="ins-control">
+          <div class="color-row">
+            <input type="color" class="color-swatch" formControlName="bgColor"/>
+            <input class="form-control form-control-sm" type="text" formControlName="bgColor"/>
+            <button type="button" class="icon-btn danger" title="Clear" (click)="clearBgColor()">
+              <i class="fa-light fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <div class="ins-row">
+        <div class="ins-label">Ảnh nền</div>
+        <div class="ins-control">
+          <input class="form-control form-control-sm" type="text" placeholder="https://..."
+                 formControlName="bgImageUrl"/>
+        </div>
+      </div>
+    }
+
+    <div class="ins-divider"></div>
+
+    <div class="ins-row">
+      <div class="ins-label">Radius</div>
+      <div class="ins-control">
+        <div class="d-flex gap-2 align-items-center">
+          <input class="form-control form-control-sm" type="number" formControlName="radiusAll"/>
+
+          <button type="button" class="icon-btn"
+                  [class.is-active]="form.get('radiusMode')?.value === 'ALL'"
+                  title="All corners"
+                  (click)="rp.setRadiusMode('ALL')">
+            <i class="fa-light fa-square"></i>
+          </button>
+
+          <button type="button" class="icon-btn"
+                  [class.is-active]="form.get('radiusMode')?.value === 'CORNERS'"
+                  title="Per-corner"
+                  (click)="rp.setRadiusMode('CORNERS')">
+            <i class="fa-light fa-draw-square"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    @if (form.get('radiusMode')?.value === 'CORNERS') {
+      <div class="ins-grid2">
+        <div class="ins-field">
+          <div class="ins-field-label">Top-left</div>
+          <div class="ins-input">
+            <span class="ins-ico"><i class="fa-light fa-up-left"></i></span>
+            <input class="form-control form-control-sm" type="number" formControlName="radiusTL"/>
+          </div>
+        </div>
+
+        <div class="ins-field">
+          <div class="ins-field-label">Top-right</div>
+          <div class="ins-input">
+            <span class="ins-ico"><i class="fa-light fa-up-right"></i></span>
+            <input class="form-control form-control-sm" type="number" formControlName="radiusTR"/>
+          </div>
+        </div>
+
+        <div class="ins-field">
+          <div class="ins-field-label">Bottom-left</div>
+          <div class="ins-input">
+            <span class="ins-ico"><i class="fa-light fa-down-left"></i></span>
+            <input class="form-control form-control-sm" type="number" formControlName="radiusBL"/>
+          </div>
+        </div>
+
+        <div class="ins-field">
+          <div class="ins-field-label">Bottom-right</div>
+          <div class="ins-input">
+            <span class="ins-ico"><i class="fa-light fa-down-right"></i></span>
+            <input class="form-control form-control-sm" type="number" formControlName="radiusBR"/>
+          </div>
+        </div>
+      </div>
+    }
+  </section>
+
+  <!-- ===== Padding ===== -->
+  <section class="ins-section">
+    <div class="ins-title">Padding</div>
+
+    <div class="ins-row">
+      <div class="ins-label">Padding</div>
+      <div class="ins-control">
+        <div class="d-flex gap-2 align-items-center">
+          <input class="form-control form-control-sm" type="number" formControlName="paddingAll"/>
+
+          <button type="button" class="icon-btn"
+                  [class.is-active]="form.get('paddingMode')?.value === 'ALL'"
+                  title="All sides"
+                  (click)="rp.setPaddingMode('ALL')">
+            <i class="fa-light fa-square"></i>
+          </button>
+
+          <button type="button" class="icon-btn"
+                  [class.is-active]="form.get('paddingMode')?.value === 'SIDES'"
+                  title="Per-side"
+                  (click)="rp.setPaddingMode('SIDES')">
+            <i class="fa-light fa-draw-square"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    @if (form.get('paddingMode')?.value === 'SIDES') {
+      <div class="ins-grid2">
+        <div class="ins-field">
+          <div class="ins-field-label">Top</div>
+          <div class="ins-input">
+            <span class="ins-ico"><i class="fa-light fa-square-caret-up"></i></span>
+            <input class="form-control form-control-sm" type="number" formControlName="paddingTop"/>
+          </div>
+        </div>
+
+        <div class="ins-field">
+          <div class="ins-field-label">Bottom</div>
+          <div class="ins-input">
+            <span class="ins-ico"><i class="fa-light fa-square-caret-down"></i></span>
+            <input class="form-control form-control-sm" type="number" formControlName="paddingBottom"/>
+          </div>
+        </div>
+
+        <div class="ins-field">
+          <div class="ins-field-label">Left</div>
+          <div class="ins-input">
+            <span class="ins-ico"><i class="fa-light fa-square-caret-left"></i></span>
+            <input class="form-control form-control-sm" type="number" formControlName="paddingLeft"/>
+          </div>
+        </div>
+
+        <div class="ins-field">
+          <div class="ins-field-label">Right</div>
+          <div class="ins-input">
+            <span class="ins-ico"><i class="fa-light fa-square-caret-right"></i></span>
+            <input class="form-control form-control-sm" type="number" formControlName="paddingRight"/>
+          </div>
+        </div>
+      </div>
+    }
+  </section>
+
+  <!-- ===== Margin ===== -->
+  <section class="ins-section">
+    <div class="ins-title">Margin</div>
+
+    <div class="ins-row">
+      <div class="ins-label">Margin</div>
+      <div class="ins-control">
+        <div class="d-flex gap-2 align-items-center">
+          <input class="form-control form-control-sm" type="number" formControlName="marginAll"/>
+
+          <button type="button" class="icon-btn"
+                  [class.is-active]="form.get('marginMode')?.value === 'ALL'"
+                  title="All sides"
+                  (click)="rp.setMarginMode('ALL')">
+            <i class="fa-light fa-square"></i>
+          </button>
+
+          <button type="button" class="icon-btn"
+                  [class.is-active]="form.get('marginMode')?.value === 'SIDES'"
+                  title="Per-side"
+                  (click)="rp.setMarginMode('SIDES')">
+            <i class="fa-light fa-draw-square"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    @if (form.get('marginMode')?.value === 'SIDES') {
+      <div class="ins-grid2">
+        <div class="ins-field">
+          <div class="ins-field-label">Top</div>
+          <div class="ins-input">
+            <span class="ins-ico"><i class="fa-light fa-square-caret-up"></i></span>
+            <input class="form-control form-control-sm" type="number" formControlName="marginTop"/>
+          </div>
+        </div>
+
+        <div class="ins-field">
+          <div class="ins-field-label">Bottom</div>
+          <div class="ins-input">
+            <span class="ins-ico"><i class="fa-light fa-square-caret-down"></i></span>
+            <input class="form-control form-control-sm" type="number" formControlName="marginBottom"/>
+          </div>
+        </div>
+
+        <div class="ins-field">
+          <div class="ins-field-label">Left</div>
+          <div class="ins-input">
+            <span class="ins-ico"><i class="fa-light fa-square-caret-left"></i></span>
+            <input class="form-control form-control-sm" type="number" formControlName="marginLeft"/>
+          </div>
+        </div>
+
+        <div class="ins-field">
+          <div class="ins-field-label">Right</div>
+          <div class="ins-input">
+            <span class="ins-ico"><i class="fa-light fa-square-caret-right"></i></span>
+            <input class="form-control form-control-sm" type="number" formControlName="marginRight"/>
+          </div>
+        </div>
+      </div>
+    }
+  </section>
+
+  <!-- ===== Link ===== -->
+  <section class="ins-section">
+    <div class="ins-row">
+      <div class="ins-label">Liên kết</div>
+      <div class="ins-control">
+        <select class="form-select form-select-sm ins-select" formControlName="linkType">
+          <option value="">Lựa chọn</option>
+          <option value="url">URL</option>
+          <option value="product">Product</option>
+          <option value="blog">Blog</option>
+        </select>
+      </div>
+    </div>
+  </section>
+</ng-container>

@@ -11,6 +11,13 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 import {EditorLayerNodeComponent} from './pages/editor-left-panel/components/editor-layer-node.component';
 import {NodeTypeIconPipe} from '../../shared/pipes/node-type-icon.pipe';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {
+  RpPanelContainerComponent
+} from './pages/editor-right-panel/components/rp-panel-container/rp-panel-container.component';
+import {RpPanelGridComponent} from './pages/editor-right-panel/components/rp-panel-grid/rp-panel-grid.component';
+import {RpPanelTextComponent} from './pages/editor-right-panel/components/rp-panel-text/rp-panel-text.component';
+import {RpPanelImageComponent} from './pages/editor-right-panel/components/rp-panel-image/rp-panel-image.component';
+import {RpPanelCardComponent} from './pages/editor-right-panel/components/rp-panel-card/rp-panel-card.component';
 
 
 @NgModule({
@@ -20,7 +27,12 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
     EditorRightPanelComponent,
     EditorLeftPanelComponent,
     CanvasNodeComponent,
-    EditorLayerNodeComponent
+    EditorLayerNodeComponent,
+    RpPanelContainerComponent,
+    RpPanelGridComponent,
+    RpPanelTextComponent,
+    RpPanelImageComponent,
+    RpPanelCardComponent,
   ],
   imports: [CommonModule, BuilderRouting, LayoutModule, DragDropModule, NodeTypeIconPipe, ReactiveFormsModule],
 })
