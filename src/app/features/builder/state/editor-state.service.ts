@@ -349,7 +349,7 @@ export class EditorStateService {
       case 'TEXT':
         return {content: 'New text', fontSize: 14};
       case 'IMAGE':
-        return {imageUrl: 'https://picsum.photos/600/400?random=99', radius: 12};
+        return {imageUrl: 'https://picsum.photos/600/400?random=99', radius: { tl: 12, tr: 12, br: 12, bl: 12 }};
       case 'BLOCK':
         return {direction: 'COLUMN', gap: 12, padding: {top: 12, right: 12, bottom: 12, left: 12}};
       case 'GRID':

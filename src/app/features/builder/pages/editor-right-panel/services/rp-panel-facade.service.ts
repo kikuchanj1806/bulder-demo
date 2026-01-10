@@ -14,25 +14,27 @@ export class RpPanelFacade {
   // Radius
   // =====================
   setRadiusMode(mode: 'ALL' | 'CORNERS') {
-    // ✅ CHANGED: centralize logic
     this.form.patchValue({ radiusMode: mode }, { emitEvent: true });
-    this.applyRadiusModeControls(mode);
+    this.applyRadiusModeControls(mode); // ✅ CHANGED: centralize
 
+    // Optional seed khi chuyển mode (giữ giống bạn đang làm)
     if (mode === 'ALL') {
-      const v = this.toNum(this.form.get('radiusAll')?.value, 0);
+      const v = this.form.get('radiusAll')?.value;
+      const n = (v == null || v === '') ? 0 : Number(v) || 0;
       this.form.patchValue(
-        { radiusTL: v, radiusTR: v, radiusBL: v, radiusBR: v },
-        { emitEvent: false } // tránh spam autosave
+        { radiusTL: n, radiusTR: n, radiusBR: n, radiusBL: n },
+        { emitEvent: false }
       );
     } else {
-      // CORNERS: nếu corner trống thì seed từ radiusAll
-      const seed = this.toNum(this.form.get('radiusAll')?.value, 0);
+      const all = this.form.get('radiusAll')?.value;
+      const seed = (all == null || all === '') ? 0 : Number(all) || 0;
+
       this.form.patchValue(
         {
           radiusTL: this.form.get('radiusTL')?.value ?? seed,
           radiusTR: this.form.get('radiusTR')?.value ?? seed,
-          radiusBL: this.form.get('radiusBL')?.value ?? seed,
           radiusBR: this.form.get('radiusBR')?.value ?? seed,
+          radiusBL: this.form.get('radiusBL')?.value ?? seed,
         },
         { emitEvent: false }
       );
@@ -40,25 +42,26 @@ export class RpPanelFacade {
   }
 
   applyRadiusModeControls(mode: 'ALL' | 'CORNERS') {
-    // ✅ yêu cầu của bạn: icon-btn active => radiusAll disable (khi CORNERS)
     const all = this.form.get('radiusAll');
     const tl = this.form.get('radiusTL');
     const tr = this.form.get('radiusTR');
-    const bl = this.form.get('radiusBL');
     const br = this.form.get('radiusBR');
+    const bl = this.form.get('radiusBL');
+
+    if (!all || !tl || !tr || !br || !bl) return;
 
     if (mode === 'ALL') {
-      all?.enable({ emitEvent: false });
-      tl?.disable({ emitEvent: false });
-      tr?.disable({ emitEvent: false });
-      bl?.disable({ emitEvent: false });
-      br?.disable({ emitEvent: false });
+      all.enable({ emitEvent: false });
+      tl.disable({ emitEvent: false });
+      tr.disable({ emitEvent: false });
+      br.disable({ emitEvent: false });
+      bl.disable({ emitEvent: false });
     } else {
-      all?.disable({ emitEvent: false });
-      tl?.enable({ emitEvent: false });
-      tr?.enable({ emitEvent: false });
-      bl?.enable({ emitEvent: false });
-      br?.enable({ emitEvent: false });
+      all.disable({ emitEvent: false });
+      tl.enable({ emitEvent: false });
+      tr.enable({ emitEvent: false });
+      br.enable({ emitEvent: false });
+      bl.enable({ emitEvent: false });
     }
   }
 

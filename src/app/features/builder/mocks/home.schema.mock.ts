@@ -16,6 +16,14 @@ export interface EdgeInsets {
   left: number;
 }
 
+export type CornerRadii = {
+  tl: number;
+  tr: number;
+  br: number;
+  bl: number;
+};
+
+
 export type Background =
   | { type: 'COLOR'; value: string }
   | { type: 'IMAGE'; value: string };
@@ -30,7 +38,7 @@ export interface NodePropsBase {
   // box
   padding?: EdgeInsets;
   margin?: EdgeInsets;
-  radius?: number;
+  radius?: CornerRadii;
 
   // visual
   background?: Background;
@@ -203,7 +211,7 @@ export const HOME_PAGE_SCHEMA_MOCK: PageSchema = {
           direction: 'COLUMN',
           gap: 12,
           padding: {top: 12, right: 12, bottom: 12, left: 12},
-          radius: 12,
+          radius: { tl: 12, tr: 12, br: 12, bl: 12 },
           background: {type: 'IMAGE', value: 'https://picsum.photos/1200/600?random=12'},
         },
         overrides: {
@@ -219,7 +227,7 @@ export const HOME_PAGE_SCHEMA_MOCK: PageSchema = {
       type: 'IMAGE',
       children: [],
       props: {
-        base: {imageUrl: 'https://picsum.photos/800/400?random=21', ratio: '16:9', radius: 12},
+        base: {imageUrl: 'https://picsum.photos/800/400?random=21', ratio: '16:9', radius: { tl: 12, tr: 12, br: 12, bl: 12 }},
         overrides: {desktop: {ratio: '4:3'}},
       },
     },

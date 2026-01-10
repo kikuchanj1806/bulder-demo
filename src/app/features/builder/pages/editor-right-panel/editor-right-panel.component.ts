@@ -115,10 +115,6 @@ export class EditorRightPanelComponent implements OnInit {
     linkType: [''],
   });
 
-  setScope(scope: RightPanelScope) {
-    this.scope$.next(scope);
-  }
-
   vm$ = combineLatest([
     this.state.schema$,
     this.state.selectedId$,
@@ -243,33 +239,14 @@ export class EditorRightPanelComponent implements OnInit {
       });
   }
 
-  // ===== Header actions =====
-  onToggleVisible(vm: RightPanelVm) {
-    if (!vm.selectedId || !vm.canMutate) return;
-    this.state.toggleNodeVisible(vm.selectedId, vm.mode, vm.scope);
-  }
-
-  onDuplicate(vm: RightPanelVm) {
-    if (!vm.selectedId || !vm.canMutate) return;
-    this.state.duplicateNodeById(vm.selectedId);
-  }
-
-  onDelete(vm: RightPanelVm) {
-    if (!vm.selectedId || !vm.canMutate) return;
-    this.state.removeNodeById(vm.selectedId);
-  }
-
-  onResetOverride(vm: RightPanelVm) {
-    if (!vm.selectedId || !vm.canEdit) return;
-    if (vm.scope !== 'mode') return;
-    this.state.clearOverride(vm.selectedId, vm.mode);
-  }
-
   // ===== mapping computed -> form =====
+// ===== mapping computed -> form =====
   private mapPropsToForm(type: NodeType, p: Partial<NodePropsBase>) {
     const pad: any = (p as any).padding ?? null;
     const mar: any = (p as any).margin ?? null;
     const bg: any = (p as any).background ?? null;
+
+    const rad: any = (p as any).radius ?? null;
 
     const padAll =
       pad && pad.top === pad.right && pad.top === pad.bottom && pad.top === pad.left
@@ -281,10 +258,19 @@ export class EditorRightPanelComponent implements OnInit {
         ? mar.top
         : null;
 
+    const hasRad = !!rad;
+    const radAll =
+      hasRad && rad.tl === rad.tr && rad.tl === rad.br && rad.tl === rad.bl
+        ? rad.tl
+        : null;
+
+    const radiusMode: 'ALL' | 'CORNERS' = (radAll != null) ? 'ALL' : 'CORNERS';
+
     return {
       isVisible: (p as any).isVisible !== false,
       gap: (p as any).gap ?? null,
 
+      // ===== Padding =====
       paddingMode: padAll != null ? 'ALL' : 'SIDES',
       paddingAll: padAll,
       paddingTop: pad?.top ?? null,
@@ -292,6 +278,7 @@ export class EditorRightPanelComponent implements OnInit {
       paddingBottom: pad?.bottom ?? null,
       paddingLeft: pad?.left ?? null,
 
+      // ===== Margin =====
       marginMode: marAll != null ? 'ALL' : 'SIDES',
       marginAll: marAll,
       marginTop: mar?.top ?? null,
@@ -299,29 +286,34 @@ export class EditorRightPanelComponent implements OnInit {
       marginBottom: mar?.bottom ?? null,
       marginLeft: mar?.left ?? null,
 
-      radiusMode: 'ALL',
-      radiusAll: (p as any).radius ?? null,
-      radiusTL: null,
-      radiusTR: null,
-      radiusBL: null,
-      radiusBR: null,
+      // ===== Radius =====
+      // ✅ CHANGED: load đúng từ CornerRadii
+      radiusMode,
+      radiusAll: radAll,
+      radiusTL: rad?.tl ?? null,
+      radiusTR: rad?.tr ?? null,
+      radiusBR: rad?.br ?? null,
+      radiusBL: rad?.bl ?? null,
 
+      // ===== Container =====
       direction: (p as any).direction ?? 'COLUMN',
       columns: (p as any).columns ?? null,
 
+      // ===== Text =====
       content: (p as any).content ?? '',
       fontSize: (p as any).fontSize ?? null,
       fontWeight: (p as any).fontWeight ?? null,
 
+      // ===== Image/Card =====
       imageUrl: (p as any).imageUrl ?? '',
       title: (p as any).title ?? '',
       price: (p as any).price ?? '',
 
+      // ===== Background =====
       bgType: bg?.type ?? 'COLOR',
       bgColor: bg?.type === 'COLOR' ? (bg?.value ?? '#ffffff00') : '#ffffff00',
       bgImageUrl: bg?.type === 'IMAGE' ? (bg?.value ?? '') : '',
 
-      // linkType demo: nếu schema chưa có thì cứ để rỗng
       linkType: (p as any).linkType ?? '',
     };
   }
@@ -337,6 +329,7 @@ export class EditorRightPanelComponent implements OnInit {
       patch.gap = c.gap.value != null && c.gap.value !== '' ? Number(c.gap.value) : null;
     }
 
+// ===== Radius =====
     const radiusDirty =
       c.radiusAll?.dirty || c.radiusMode?.dirty ||
       c.radiusTL?.dirty || c.radiusTR?.dirty || c.radiusBL?.dirty || c.radiusBR?.dirty;
@@ -344,15 +337,39 @@ export class EditorRightPanelComponent implements OnInit {
     if (radiusDirty) {
       const mode = (c.radiusMode?.value ?? 'ALL') as 'ALL' | 'CORNERS';
 
-      if (mode === 'CORNERS' && (c.radiusTL?.dirty || c.radiusTR?.dirty || c.radiusBL?.dirty || c.radiusBR?.dirty)) {
-        const tl = c.radiusTL?.value != null && c.radiusTL.value !== '' ? Number(c.radiusTL.value) : 0;
-        const tr = c.radiusTR?.value != null && c.radiusTR.value !== '' ? Number(c.radiusTR.value) : 0;
-        const bl = c.radiusBL?.value != null && c.radiusBL.value !== '' ? Number(c.radiusBL.value) : 0;
-        const br = c.radiusBR?.value != null && c.radiusBR.value !== '' ? Number(c.radiusBR.value) : 0;
-        patch.radius = Math.max(tl, tr, bl, br);
+      if (mode === 'ALL') {
+        // ✅ ALL: dùng radiusAll, empty => clear
+        const raw = c.radiusAll?.value;
+
+        if (raw == null || raw === '') {
+          patch.radius = null; // ✅ CHANGED: clear radius override/base
+        } else {
+          const v = Number(raw) || 0;
+          patch.radius = { tl: v, tr: v, br: v, bl: v }; // ✅ CHANGED
+        }
       } else {
-        const r = c.radiusAll?.value != null && c.radiusAll.value !== '' ? Number(c.radiusAll.value) : 0;
-        patch.radius = r;
+        // ✅ CORNERS: dùng 4 góc, nếu user clear hết => clear
+        const tlRaw = c.radiusTL?.value;
+        const trRaw = c.radiusTR?.value;
+        const brRaw = c.radiusBR?.value;
+        const blRaw = c.radiusBL?.value;
+
+        const allEmpty =
+          (tlRaw == null || tlRaw === '') &&
+          (trRaw == null || trRaw === '') &&
+          (brRaw == null || brRaw === '') &&
+          (blRaw == null || blRaw === '');
+
+        if (allEmpty) {
+          patch.radius = null; // ✅ clear
+        } else {
+          const tl = tlRaw != null && tlRaw !== '' ? Number(tlRaw) : 0;
+          const tr = trRaw != null && trRaw !== '' ? Number(trRaw) : 0;
+          const br = brRaw != null && brRaw !== '' ? Number(brRaw) : 0;
+          const bl = blRaw != null && blRaw !== '' ? Number(blRaw) : 0;
+
+          patch.radius = { tl, tr, br, bl }; // ✅ CHANGED: đúng CornerRadii
+        }
       }
     }
 
